@@ -45,7 +45,9 @@ class QuarkusLabExtensionProcessor {
         log.info("found {} application dependencies", deps.size());
         metadataRecorder.printBuildDateAndDeps(
                 System.currentTimeMillis(),
-                deps.stream().map(ResolvedDependency::getArtifactId).toList()
+                deps.stream()
+                        .map(dep -> dep.getArtifactId() + ":" + dep.getVersion())
+                        .toList()
         );
     }
 
