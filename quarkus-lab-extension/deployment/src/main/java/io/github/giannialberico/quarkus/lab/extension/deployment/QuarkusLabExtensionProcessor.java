@@ -1,12 +1,16 @@
 package io.github.giannialberico.quarkus.lab.extension.deployment;
 
 import io.github.giannialberico.quarkus.lab.extension.runtime.MetadataRecorder;
+import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.annotations.ExecutionTime;
 import io.quarkus.deployment.annotations.Record;
+import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
+import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
 import io.quarkus.deployment.pkg.builditem.CurateOutcomeBuildItem;
 import io.quarkus.maven.dependency.ResolvedDependency;
+import org.jboss.jandex.ClassInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,5 +39,24 @@ class QuarkusLabExtensionProcessor {
                 System.currentTimeMillis(),
                 deps.stream().map(ResolvedDependency::getArtifactId).toList()
         );
+    }
+
+    @BuildStep
+    public void registerCloneableClasses(
+            CombinedIndexBuildItem combinedIndexBuildItem,
+            BuildProducer<ReflectiveClassBuildItem> reflectionClasses
+    ) {
+
+        Collection<ClassInfo> cloneableClasses = combinedIndexBuildItem.getIndex()
+                .getAllKnownImplementations(Cloneable.class);
+
+        log.info("found {} cloneable classes", cloneableClasses.size());
+
+        for (ClassInfo c : cloneableClasses) {
+            log.info("Registering class {} for reflection because it implements Cloneable", c);
+            reflectionClasses.produce(
+                    ReflectiveClassBuildItem.builder(c.name().toString()).methods().build()
+            );
+        }
     }
 }
