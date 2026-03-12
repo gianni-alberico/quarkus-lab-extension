@@ -1,6 +1,9 @@
 package io.github.giannialberico.quarkus.lab.extension.deployment;
 
 import io.github.giannialberico.quarkus.lab.extension.runtime.MetadataRecorder;
+import io.github.giannialberico.quarkus.lab.extension.runtime.impl.Blue;
+import io.github.giannialberico.quarkus.lab.extension.runtime.impl.Red;
+import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.annotations.ExecutionTime;
@@ -10,6 +13,7 @@ import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
 import io.quarkus.deployment.pkg.builditem.CurateOutcomeBuildItem;
 import io.quarkus.maven.dependency.ResolvedDependency;
+import io.smallrye.common.annotation.RunOnVirtualThread;
 import org.jboss.jandex.ClassInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,5 +62,17 @@ class QuarkusLabExtensionProcessor {
                     ReflectiveClassBuildItem.builder(c.name().toString()).methods().build()
             );
         }
+    }
+
+    @BuildStep
+    public AdditionalBeanBuildItem registerColoredInterfaceImplementation(CombinedIndexBuildItem combinedIndexBuildItem) {
+        Class<?> implementation = Blue.class;
+
+        if(!combinedIndexBuildItem.getIndex().getAnnotations(RunOnVirtualThread.class).isEmpty()) {
+            implementation = Red.class;
+        }
+
+        log.info("registering {} as Colored implementation", implementation.getName());
+        return AdditionalBeanBuildItem.unremovableOf(implementation);
     }
 }
