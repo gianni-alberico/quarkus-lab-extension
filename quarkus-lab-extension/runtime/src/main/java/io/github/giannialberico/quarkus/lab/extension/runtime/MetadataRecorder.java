@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.List;
+import java.util.function.Supplier;
 
 @Recorder
 public class MetadataRecorder {
@@ -15,5 +16,9 @@ public class MetadataRecorder {
     public void printBuildDateAndDeps(long instant, List<String> deps) {
         logger.info("application build date: {}", new Date(instant));
         logger.info("{} application dependencies: {}", deps.size(), deps);
+    }
+
+    public Supplier<ExtensionBean> extensionBeanSupplier(String name) {
+        return () -> new ExtensionBean(name);
     }
 }
