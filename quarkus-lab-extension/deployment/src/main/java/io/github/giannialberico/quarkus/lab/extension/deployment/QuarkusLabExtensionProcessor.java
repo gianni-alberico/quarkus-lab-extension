@@ -34,7 +34,7 @@ class QuarkusLabExtensionProcessor {
         return new FeatureBuildItem(FEATURE);
     }
 
-    @Record(ExecutionTime.STATIC_INIT)
+    @Record(ExecutionTime.RUNTIME_INIT)
     @BuildStep
     public void registerBuildDateAndDeps(CurateOutcomeBuildItem curateOutcomeBuildItem, MetadataRecorder metadataRecorder) {
         Collection<ResolvedDependency> deps = curateOutcomeBuildItem.getApplicationModel().getDependencies().
