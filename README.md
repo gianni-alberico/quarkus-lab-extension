@@ -55,7 +55,7 @@ Cette propriété build time active les endpoints `/lab/extensionbean/toto` et `
 
 ## Lancement en dev mode
 ```bash
-./mvnw quarkus:dev
+mvn quarkus:dev
 ```
 
 Vérifications manuelles des endpoints :
@@ -70,7 +70,7 @@ curl localhost:8080/lab/extensionbean/tutu
 
 ## Packaging et lancement
 ```bash
-./mvnw package -DskipTests
+mvn package -DskipTests
 java -jar target/quarkus-app/quarkus-run.jar
 ```
 
@@ -80,7 +80,7 @@ java -jar target/quarkus-app/quarkus-run.jar
 
 Compiler le binaire natif :
 ```bash
-./mvnw package -Dnative -Dquarkus.native.container-build=true
+mvn package -Dnative -Dquarkus.native.container-build=true
 ```
 
 Construire l'image Docker :
@@ -96,8 +96,8 @@ docker run --rm -p 8080:8080 quarkus-lab-app-native
 
 ## Tests
 
-| Commande | Description |
-|---|---|
-| `./mvnw test` | Tests JVM |
-| `./mvnw verify -DskipTests` | Tests d'intégration sur l'app packagée |
-| `./mvnw verify -Dnative -Dquarkus.native.container-build=true` | Tests d'intégration natifs |
+| Commande                                                    | Description |
+|-------------------------------------------------------------|---|
+| `mvn test`                                                  | Tests JVM |
+| `mvn verify -DskipTests`                                    | Tests d'intégration sur l'app packagée |
+| `mvn verify -Dnative -Dquarkus.native.container-build=true` | Tests d'intégration natifs |
